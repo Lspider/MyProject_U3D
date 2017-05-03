@@ -1,6 +1,6 @@
 Learning development Unity3D and Unity Shader 
 
-# UnityShader
+# MyProject_U3D
 
 
 Requirement
