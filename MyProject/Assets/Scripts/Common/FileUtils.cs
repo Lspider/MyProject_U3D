@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Text;
 using UnityEngine;
+using SevenZip.Compression.LZMA;
 
 // #define USE_MD5
 
@@ -45,19 +47,15 @@ namespace Common
         {
             string path = "";
 
-            if (Application.platform == RuntimePlatform.Android)
+            if (Application.platform == RuntimePlatform.Android
+                || Application.platform == RuntimePlatform.IPhonePlayer)
             {
+                //iOS Application/xxxxx/Documents
+                //Android /data/data/xxx.xxx.xxx/files
                 path = Application.persistentDataPath;
             }
-            else if (Application.platform == RuntimePlatform.IPhonePlayer)
-            {
-                path = Application.dataPath;
-            }
-            else if (Application.platform == RuntimePlatform.WindowsPlayer)
-            {
-                path = Application.dataPath;
-            }
-            else if (Application.platform == RuntimePlatform.WindowsEditor)
+            else if (Application.platform == RuntimePlatform.WindowsPlayer
+                || Application.platform == RuntimePlatform.WindowsEditor)
             {
                 path = Application.dataPath;
             }
@@ -70,16 +68,16 @@ namespace Common
         public static string GetStreamingAssetsPath()
         {
             string PathURL =
-#if UNITY_ANDROID
-        "jar:file://" + Application.dataPath + "!/assets/";  
-#elif UNITY_IPHONE
+#if  UNITY_STANDALONE_WIN || UNITY_EDITOR
+    "file://"  + Application.dataPath + "/StreamingAssets/";
+#elif UNITY_ANDROID && !UNITY_EDITOR 
+        //Application.dataPath + "!/assets/";
+            "jar:file://" + Application.dataPath + "!/assets/";
+#elif UNITY_IOS && !UNITY_EDITOR 
         Application.dataPath + "/Raw/";
-#elif UNITY_STANDALONE_WIN || UNITY_EDITOR
-    "file://" + Application.dataPath + "/StreamingAssets/";
 #else
         string.Empty;  
 #endif
-
             return PathURL;
         }
         #endregion
@@ -122,6 +120,7 @@ namespace Common
             {
                 sw = t.AppendText();
             }
+
             sw.WriteLine(info);
             sw.Close();
             sw.Dispose();
@@ -253,6 +252,123 @@ namespace Common
             sw.Dispose();
         }
 
+        #endregion
+
+        #region 获取文件的MD5
+        /// <summary>
+        /// 获取文件的MD5
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public static string MD5File(string file)
+        {
+            try
+            {
+                FileStream fs = new FileStream(file, FileMode.Open);
+                System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+                byte[] retVal = md5.ComputeHash(fs);
+                fs.Close();
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < retVal.Length; i++)
+                {
+                    sb.Append(retVal[i].ToString("x2"));
+                }
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("md5file() fail, error:" + ex.Message);
+            }
+        }
+        #endregion
+
+        #region 使用LZMA算法压缩文件 
+        // 使用LZMA算法压缩文件  
+        public static void CompressFileLZMA(string inFile, string outFile)
+        {
+            SevenZip.Compression.LZMA.Encoder coder = new SevenZip.Compression.LZMA.Encoder();
+            FileStream input = new FileStream(inFile, FileMode.Open);
+            FileStream output = new FileStream(outFile, FileMode.Create);
+
+            coder.WriteCoderProperties(output);
+
+            byte[] data = BitConverter.GetBytes(input.Length);
+
+            output.Write(data, 0, data.Length);
+
+            coder.Code(input, output, input.Length, -1, null);
+            output.Flush();
+            output.Close();
+            input.Close();
+        }
+        #endregion
+
+        #region 使用LZMA算法解压文件  
+        // 使用LZMA算法解压文件  
+        public static void DecompressFileLZMA(string inFile, string outFile)
+        {
+            SevenZip.Compression.LZMA.Decoder coder = new SevenZip.Compression.LZMA.Decoder();
+            FileStream input = new FileStream(inFile, FileMode.Open);
+            FileStream output = new FileStream(outFile, FileMode.Create);
+
+            byte[] properties = new byte[5];
+            input.Read(properties, 0, 5);
+
+            byte[] fileLengthBytes = new byte[8];
+            input.Read(fileLengthBytes, 0, 8);
+            long fileLength = BitConverter.ToInt64(fileLengthBytes, 0);
+
+            coder.SetDecoderProperties(properties);
+            coder.Code(input, output, input.Length, fileLength, null);
+            output.Flush();
+            output.Close();
+            input.Close();
+        }
+        #endregion
+
+        #region 复制源文件夹到目标文件夹  
+        // 复制源文件夹到目标文件夹  
+        public static void CopyAll(DirectoryInfo source, DirectoryInfo target, ArrayList extensions = null)
+        {
+            if (source.FullName.ToLower() == target.FullName.ToLower())
+            {
+                return;
+            }
+
+            // 检测目标文件是否存在，如果不存在，则创建  
+            if (!Directory.Exists(target.FullName))
+            {
+                Directory.CreateDirectory(target.FullName);
+                target.Refresh();
+            }
+
+            // 复制文件至目标文件夹  
+            foreach (FileInfo fi in source.GetFiles())
+            {
+                if (extensions == null || extensions.Count == 0)
+                {
+                    if (fi.Extension != ".meta")
+                    {
+                        fi.CopyTo(Path.Combine(target.ToString(), fi.Name), true);
+                    }
+                }
+                else
+                {
+                    if (extensions.Contains(fi.Extension))
+                    {
+                        fi.CopyTo(Path.Combine(target.ToString(), fi.Name), true);
+                    }
+                }
+
+            }
+
+            // 使用递归复制子文件夹  
+            foreach (DirectoryInfo sourceSubDir in source.GetDirectories())
+            {
+                DirectoryInfo targetSubDir = target.CreateSubdirectory(sourceSubDir.Name);
+                CopyAll(sourceSubDir, targetSubDir, extensions);
+            }
+        }
         #endregion
     }
 }
