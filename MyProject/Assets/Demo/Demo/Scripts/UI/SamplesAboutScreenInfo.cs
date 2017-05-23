@@ -60,7 +60,7 @@ public class SamplesAboutScreenInfo
 
         titles = new Dictionary<string, string>();
 
-        titles.Add("DemoScene", "Coloring 3D");
+        titles.Add("Coloring3D", "Coloring 3D");
 
         // Init our Common Cache Strings
 
@@ -78,7 +78,7 @@ public class SamplesAboutScreenInfo
 
         descriptions = new Dictionary<string, string>();
 
-        // Image Targets
+        // Coloring3D
 
         descriptions.Add("Coloring3D",
             "\nThe Coloring 3D sample shows how to detect an image " +

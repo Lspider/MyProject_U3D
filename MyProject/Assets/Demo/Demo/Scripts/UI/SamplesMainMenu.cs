@@ -74,7 +74,6 @@ public class SamplesMainMenu : MonoBehaviour
         {
 
             case ("Coloring3D"): SamplesMainMenu.menuItem = SamplesMainMenu.MenuItem.Coloring3D; break;
-            case ("DrawPrimitive"): SamplesMainMenu.menuItem = SamplesMainMenu.MenuItem.DrawPrimitive; break;
         }
 
         AboutTitle.text = aboutScreenInfo.GetTitle(SamplesMainMenu.menuItem.ToString());

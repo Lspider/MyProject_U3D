@@ -10,22 +10,12 @@ using System.Collections;
 
 public class SamplesConfigUI : MonoBehaviour
 {
-
     public enum UIPresetsEnum
     {
         Coloring3D = 0,
     }
     
     public UIPresetsEnum UIPresets;
-
     public Text SamplesTitle;
-
-    //public GameObject ExtendedTracking;
-    //public GameObject Autofocus;
-    //public GameObject Flash;
-    //public GameObject CameraGroup;
-    //public GameObject DatasetGroup;
-    //public GameObject VirtualButtonsGroup;
-    //public GameObject SmartTerrainGroup;
 
 }
