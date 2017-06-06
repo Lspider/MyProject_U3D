@@ -209,7 +209,26 @@ namespace Common
             return arrlist;
         }
 
+        public static byte[] LoadFile(string filePath)
+        {
+            //创建文件读取流
+            FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            fileStream.Seek(0, SeekOrigin.Begin);
+            //创建文件长度缓冲区
+            byte[] bytes = new byte[fileStream.Length];
+            //读取文件
+            fileStream.Read(bytes, 0, (int)fileStream.Length);
+            //释放文件读取流
+            fileStream.Close();
+            fileStream.Dispose();
+            fileStream = null;
+
+            return bytes;
+        }
+
         #endregion
+
+
 
         #region 写入模型到本地 
         //写入模型到本地  
