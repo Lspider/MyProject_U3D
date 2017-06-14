@@ -112,7 +112,7 @@ public class CameraDevice : MonoBehaviour
             Directory.CreateDirectory(filePath);
         }
 
-        File.WriteAllBytes(filePath + Time.time + ".jpg", data);
+        File.WriteAllBytes(filePath + Time.time + ".png", data);
         webCamTexture.Play();
 
        target.GetComponent<Renderer>().material.SetTexture("_MainTex", texture);

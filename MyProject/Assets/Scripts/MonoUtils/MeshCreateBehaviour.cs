@@ -19,6 +19,7 @@ public class MeshCreateBehaviour : MonoBehaviour {
     void CreateMul(int len, float weith)
     {
         GameObject obj = new GameObject("six");
+
         float angle = 360.0f / len;
         Vector3 dir = Vector3.zero;
         Vector3 forward = Vector3.forward;

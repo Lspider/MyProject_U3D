@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Demo/GameDemo/WebCamTexture/Main.unity
+- path: Assets/Demo/GameDemo/CaptureImgForMove/Main.unity
   isLoaded: 1
   isActive: 1
