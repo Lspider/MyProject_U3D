@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GyroscopeBehaviour : MonoBehaviour {
     private const float lowPassFilterFactor = 0.2f;
@@ -9,10 +10,11 @@ public class GyroscopeBehaviour : MonoBehaviour {
     public float speedX;
     public float speedY;
 
+    private float moveX;
+    private float moveY;
+
     private float maxRotate = 90;
     private float minRotate = -90;
-
-    private Quaternion currentRotation;
 
     protected void Start()
     {
@@ -46,12 +48,11 @@ public class GyroscopeBehaviour : MonoBehaviour {
         {  
             if(Input.touches[0].phase==TouchPhase.Moved)  
             {  
-                var horizontal = Input.GetAxis("Mouse X") * speedX;  
-                var vertical = Input.GetAxis("Mouse Y") * speedY * -1;
-                vertical = ClampAngle(vertical, minRotate, maxRotate);
+                moveX = Input.GetAxis("Mouse X") * speedX;  
+                moveY = Input.GetAxis("Mouse Y") * speedY * -1;
+                moveY = ClampAngle(moveY, minRotate, maxRotate);
 
-                transform.Rotate(vertical, horizontal, 0);
-                currentRotation = transform.localRotation;
+                transform.Rotate(moveY, moveX, 0);
             }  
         }
         else{
@@ -66,7 +67,6 @@ public class GyroscopeBehaviour : MonoBehaviour {
 
         //旋转  
         transform.Rotate(vertical, horizontal, 0);
-        currentRotation = transform.localRotation;
 #endif
     }
 
