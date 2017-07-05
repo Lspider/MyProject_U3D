@@ -12,6 +12,8 @@ public class GyroBehaviour : MonoBehaviour {
         gyinfo = SystemInfo.supportsGyroscope;
         go = Input.gyro;
         go.enabled = true;
+
+        
     }
 	
 	// Update is called once per frame
@@ -37,4 +39,6 @@ public class GyroBehaviour : MonoBehaviour {
         GUI.Label(new Rect(50, 350, 500, 60), "userAcceleration : " + Input.gyro.userAcceleration.x + "       " + Input.gyro.userAcceleration.y + "         " + Input.gyro.userAcceleration.z);
 
     }
+
+   
 }
