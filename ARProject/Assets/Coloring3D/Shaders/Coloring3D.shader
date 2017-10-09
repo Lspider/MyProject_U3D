@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2015-2016 VisionStar Information Technology (Shanghai) Co., Ltd. All Rights Reserved.
 // EasyAR is the registered trademark or trademark of VisionStar Information Technology (Shanghai) Co., Ltd in China
 // and other countries for the augmented reality technology developed by VisionStar Information Technology (Shanghai) Co., Ltd.
-Shader "Samples/TextureSample" {
+Shader "Custom/Coloring 3D" {
 	Properties{
 		_MainTex("Base (RGB)", 2D) = "white" {}
 		_Uvpoint1("point1", Vector) = (0 , 0 , 0 , 0)
